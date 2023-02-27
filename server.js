@@ -1,11 +1,33 @@
+const express = require("express");
+const expressSession = require("express-session");
+const app = express();
+app.set("port", 9000);
+
+app.use(
+    expressSession({
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            secure: true,
+        },
+    })
+);
+
+const appServer = app.listen(app.get("port"), () => {
+    console.log(app.get("port"), "번 포트에서 대기 중");
+});
+
 const Session = require("./session");
 const User = require("./user");
 const Ws = require("ws").Server;
 const crypto = require("crypto");
 
-const server = new Ws({ port: 9000 }, () => {
-    console.log("서버 연결 완료");
-});
+const server = new Ws({ server: appServer });
+
+// ({ port: 9000 }, () => {
+//     console.log("서버 연결 완료");
+// });
 
 const sessions = {};
 
